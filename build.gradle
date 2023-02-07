@@ -1,0 +1,66 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
+    }
+    dependencies {
+		classpath "io.spring.gradle:dependency-management-plugin:1.1.0"
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.2"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "org.springframework.boot"
+
+	group = 'com.example'
+	version = '0.0.1-SNAPSHOT'
+	sourceCompatibility = '17'
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+    [compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
+
+    configurations {
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.0.2"
+            mavenBom "org.junit:junit-bom:5.8.2"
+        }
+    }
+
+    dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    }
+
+    test {
+		useJUnitPlatform()
+    }
+}
